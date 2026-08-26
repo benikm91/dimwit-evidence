@@ -1,0 +1,20 @@
+{
+  "name": "scala-cli",
+  "argv": [
+    "/Users/mebr/Library/Application Support/Coursier/bin/.scala-cli.aux",
+    "bsp",
+    "--json-options",
+    "/Users/mebr/Documents/Privat/Projects/dimwit-evidence-custom/cases/04-elastic-transform-hw-swap/.scala-build/ide-options-v2.json",
+    "--json-launcher-options",
+    "/Users/mebr/Documents/Privat/Projects/dimwit-evidence-custom/cases/04-elastic-transform-hw-swap/.scala-build/ide-launcher-options.json",
+    "--envs-file",
+    "/Users/mebr/Documents/Privat/Projects/dimwit-evidence-custom/cases/04-elastic-transform-hw-swap/.scala-build/ide-envs.json",
+    "/Users/mebr/Documents/Privat/Projects/dimwit-evidence-custom/cases/04-elastic-transform-hw-swap/Fixed.scala"
+  ],
+  "version": "1.12.5",
+  "bspVersion": "2.1.1",
+  "languages": [
+    "scala",
+    "java"
+  ]
+}
