@@ -95,3 +95,10 @@ Note also that `@triton.jit` and DimWit's `jit` are not the same promise: the fi
 kernel definition, the second hands a function to XLA, which decides how many kernels to
 emit. That difference is real and it is irrelevant to this defect, which is settled before
 either compiler runs.
+
+## Supplementary files
+
+| file | what it shows |
+|---|---|
+| `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); missed because the reductions are untyped as softmax uses them (`max` not at all, `sum` only for a literal axis, but upstream passes `dim` at run time) — only with a literal axis and an annotated intermediate is the broadcast rejected by name; vector scope enforced statically — the tests assert the exact mypy and pyright errors |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |

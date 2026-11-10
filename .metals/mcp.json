@@ -1,0 +1,7 @@
+{
+  "servers": {
+    "dimwit-evidence-custom-metals": {
+      "url": "http://localhost:53061/mcp"
+    }
+  }
+}

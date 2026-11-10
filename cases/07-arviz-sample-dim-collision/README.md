@@ -24,3 +24,10 @@ language: `dimwit.evidence.Sample` and `arviz.Sample` are different types even t
 share a short name, and the flattened axis is not a name at all but the structured type
 `Chain |*| Draw`. This is the one case in the dossier where DimWit beats *every* other
 named-axis system, not just the positional ones.
+
+## Supplementary files
+
+| file | what it shows |
+|---|---|
+| `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); stacking needs `jnp.reshape`, which is `Any` in the stubs, so the stacked axis is never derived and the colliding declaration passes mypy and pyright — the tests assert zero errors plus a control of the inferred types |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |

@@ -22,3 +22,10 @@ matrix product `a[batch, row, inner] @ b[inner, col]` where the implementation c
 In DimWit a contraction names the axis being summed over, and the axis must exist in **both**
 operands. `a.dot(Axis[Row])(b)` does not type-check because `b` has no `Row` axis — the
 mistake is not merely detected, it is unstateable.
+
+## Supplementary files
+
+| file | what it shows |
+|---|---|
+| `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); `jnp.tensordot` and `jnp.einsum` are `Any` in the stubs, so the wrong contraction passes mypy and pyright — the tests assert zero errors plus a control of the inferred types |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |

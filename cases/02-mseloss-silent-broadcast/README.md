@@ -37,3 +37,5 @@ by accident later.
 | `Buggy.scala` | both jaxtyping signatures in DimWit, in one file as they are there — neither can reach the defect |
 | `Fixed.scala` | `mseStrict`, with a `@main` check that runs it |
 | `PLAIN_SOLUTION.md`, `PLAIN_JAX_SOLUTION.md`, `JAXTYPING_SOLUTION.md`, `DIMWIT_SOLUTION.md` | verdicts |
+| `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); both signatures are rejected statically by mypy and pyright; the tests run both checkers and assert the exact errors (they disagree on one line) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |

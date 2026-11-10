@@ -22,3 +22,10 @@ normalisation computes statistics over the wrong axes and produces plausible num
 DimWit writes the layout once, as a type: `Tensor4[Frame, Channel, Height, Width, Float32]`
 and `Tensor4[Frame, Height, Width, Channel, Float32]` are different types regardless of
 their extents.
+
+## Supplementary files
+
+| file | what it shows |
+|---|---|
+| `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); `Nchw` passed where `Nhwc` is expected is rejected statically by mypy and pyright, also for square `[2, 3, 3, 3]` frames; the consumer's `frames.mean` is a stub gap — the tests assert the exact errors |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
