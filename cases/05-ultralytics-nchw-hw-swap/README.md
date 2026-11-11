@@ -32,4 +32,4 @@ As in case 04, it is invisible whenever the model input is square — and YOLO's
 | file | what it shows |
 |---|---|
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); every variant that builds the buffer from shape entries passes mypy and pyright; only a typed rewrite (`zeros_like` + `transpose`) is rejected — the tests assert the exact errors |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |

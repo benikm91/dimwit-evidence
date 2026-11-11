@@ -4,8 +4,7 @@
 two 3-vectors on one axis, as DimWit defines it. `missed` at the upstream scope, where
 `cross` takes an axis argument and `jnp.cross` is `Any`.**
 
-*Supplementary. This column is not part of the results table in the top-level README and
-is not run by `run_all.sh`; run it with `./scripts/check_tensor_annotations.sh -v`.*
+*Not run by `run_all.sh`; run it with `./scripts/check_tensor_annotations.sh -v`.*
 
 [tensor_annotations](https://github.com/google-deepmind/tensor_annotations) v2.0.3 with
 `tensor_annotations_jax_stubs`, checked with mypy and pyright (they agree).

@@ -34,4 +34,4 @@ label (`Chain |*| Draw`), and `unflatten`, which demands a `Shape` whose labels 
 | file | what it shows |
 |---|---|
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); the run-time transpose permutation is rejected for buggy and fixed alike, and `jnp.reshape` is `Any`, so the point-list type is never checked — the tests assert the exact errors plus a control of the inferred types |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |

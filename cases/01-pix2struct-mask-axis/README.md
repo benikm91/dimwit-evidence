@@ -39,4 +39,4 @@ padding tokens.
 | `Fixed.scala` | the DimWit program, in which the expansion is not needed at all |
 | `PLAIN_SOLUTION.md`, `PLAIN_JAX_SOLUTION.md`, `JAXTYPING_SOLUTION.md`, `DIMWIT_SOLUTION.md` | verdicts |
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); mypy accepts the verbatim buggy indexing (`__getitem__ -> Any`) but rejects the defect re-expressed through typed `transpose` + broadcast — the tests run mypy and assert exactly that |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |

@@ -101,4 +101,4 @@ either compiler runs.
 | file | what it shows |
 |---|---|
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); missed because the reductions are untyped as softmax uses them (`max` not at all, `sum` only for a literal axis, but upstream passes `dim` at run time) — only with a literal axis and an annotated intermediate is the broadcast rejected by name; vector scope enforced statically — the tests assert the exact mypy and pyright errors |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |

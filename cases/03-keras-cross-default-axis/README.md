@@ -50,4 +50,4 @@ because the sizes are identical in the buggy and the correct program.
 | file | what it shows |
 |---|---|
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); at the minimal interface (`cross` of two vectors on one axis, as in DimWit) crossing `Spatial` with `Rgb` is rejected by mypy and pyright; at the upstream scope (`jnp.cross` with an axis argument, `Any`) everything passes — the tests assert the exact error plus a control |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |

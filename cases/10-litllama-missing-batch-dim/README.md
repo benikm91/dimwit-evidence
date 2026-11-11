@@ -32,4 +32,4 @@ there is no batch axis to forget.
 | file | what it shows |
 |---|---|
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); the unbatched call is rejected statically by mypy and pyright (rank is in the class, even through `Array1 \| Any` from slicing); the fix's `reshape` is untyped — the tests assert the exact errors |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |

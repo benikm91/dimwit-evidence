@@ -23,6 +23,7 @@ as 14 while they were still in, is now case 13. See *Cases that were dropped* be
 ./run_all.sh            # pytest over all reconstructions, then the DimWit compile checks
 uv run pytest -q        # just the Python side
 ./scripts/check_scala.sh -v   # just the Scala side, with compiler output
+./scripts/check_tensor_annotations.sh -v   # the tensor_annotations column (mypy + pyright)
 ```
 
 Requirements: [uv](https://github.com/astral-sh/uv) and
@@ -43,9 +44,10 @@ which is not in the lock file. It was verified separately against torch 2.5.1 �
 | `plain.py` | buggy and fixed reconstruction in NumPy (or PyTorch where the semantics matter), with tests that assert the *erroneous* behaviour as well as the correct one |
 | `plain_jax.py` | the same in JAX |
 | `jaxtyping_case.py` | the same annotated with jaxtyping + beartype |
+| `tensor_annotations_case.py` | the same annotated with tensor_annotations, with tests that run mypy and pyright on the file and assert their exact diagnostics |
 | `Buggy.scala` | the DimWit transliteration of the mistake — normally rejected by the compiler |
 | `Fixed.scala` | the DimWit program that is correct, with a `@main` check that runs it |
-| `PLAIN_SOLUTION.md`, `PLAIN_JAX_SOLUTION.md`, `JAXTYPING_SOLUTION.md`, `DIMWIT_SOLUTION.md` | one verdict each, with the reasoning and the honest limits |
+| `PLAIN_SOLUTION.md`, `PLAIN_JAX_SOLUTION.md`, `JAXTYPING_SOLUTION.md`, `TENSOR_ANNOTATIONS_SOLUTION.md`, `DIMWIT_SOLUTION.md` | one verdict each, with the reasoning and the honest limits |
 
 ## Categories
 
@@ -61,27 +63,30 @@ Every verdict is one of three:
 
 Verified by `run_all.sh`: **184 Python tests pass**, all 13 `Fixed.scala` compile, 12 of 13
 `Buggy.scala` are rejected at compile time, and the 1 that is not is recorded as `missed`.
+The tensor_annotations column is verified separately by `./scripts/check_tensor_annotations.sh`
+(**55 tests pass**), which runs in a throwaway environment so the lock file is untouched.
 
-| # | case | source | Plain | jaxtyping | **DimWit** |
-|---|---|---|---|---|---|
-| 01 | attention mask on the query axis | [transformers#23974](https://github.com/huggingface/transformers/issues/23974) | missed | missed¹ | **compile** |
-| 02 | MSE over `[n,1]` vs `[n]` | [pytorch#16045](https://github.com/pytorch/pytorch/issues/16045) | missed (warns)² | run-time³ | **compile** |
-| 03 | `cross` on the first length-3 axis | [keras#23219](https://github.com/keras-team/keras/pull/23219) | missed | missed | **compile** |
-| 04 | displacement normalised by the wrong side | [torchvision#9299](https://github.com/pytorch/vision/issues/9299) | missed | missed | **missed**⁴ |
-| 05 | NCHW height/width swapped | [ultralytics#23126](https://github.com/ultralytics/ultralytics/issues/23126) | missed | missed⁵ | **compile** |
-| 06 | softmax reduction dropped its axis | [triton#11406](https://github.com/triton-lang/triton/issues/11406) | missed⁶ | run-time⁷ | **compile** |
-| 07 | stacked dim name collided | [arviz#1647](https://github.com/arviz-devs/arviz/pull/1647) | missed | missed | **compile** |
-| 08 | reshape with pre-transpose sizes | [pymc#7178](https://github.com/pymc-devs/pymc/issues/7178) | missed | run-time⁸ | **compile** |
-| 09 | single G-vector broadcast | [pyscf#2961](https://github.com/pyscf/pyscf/issues/2961) | missed | run-time | **compile** |
-| 10 | model called without a batch axis | [lit-llama#166](https://github.com/Lightning-AI/lit-llama/pull/166) | missed | run-time | **compile** |
-| 11 | NCHW frames into an NHWC pipeline | [vllm#51076](https://github.com/vllm-project/vllm/pull/51076) | missed | missed⁹ | **compile** |
-| 12 | batched contraction over the wrong axis | [mlx#4125](https://github.com/ml-explore/mlx/pull/4125) | missed⁹ | missed⁹ | **compile** |
-| 13 | `(w,h)` extents into an `(h,w)` API | [Gymnasium#1312](https://github.com/Farama-Foundation/Gymnasium/pull/1312) | missed | missed | **compile** |
+| # | case | source | Plain | jaxtyping | tensor_annotations¹⁰ | **DimWit** |
+|---|---|---|---|---|---|---|
+| 01 | attention mask on the query axis | [transformers#23974](https://github.com/huggingface/transformers/issues/23974) | missed | missed¹ | missed | **compile** |
+| 02 | MSE over `[n,1]` vs `[n]` | [pytorch#16045](https://github.com/pytorch/pytorch/issues/16045) | missed (warns)² | run-time³ | compile¹¹ | **compile** |
+| 03 | `cross` on the first length-3 axis | [keras#23219](https://github.com/keras-team/keras/pull/23219) | missed | missed | compile¹² | **compile** |
+| 04 | displacement normalised by the wrong side | [torchvision#9299](https://github.com/pytorch/vision/issues/9299) | missed | missed | missed | **missed**⁴ |
+| 05 | NCHW height/width swapped | [ultralytics#23126](https://github.com/ultralytics/ultralytics/issues/23126) | missed | missed⁵ | missed | **compile** |
+| 06 | softmax reduction dropped its axis | [triton#11406](https://github.com/triton-lang/triton/issues/11406) | missed⁶ | run-time⁷ | missed | **compile** |
+| 07 | stacked dim name collided | [arviz#1647](https://github.com/arviz-devs/arviz/pull/1647) | missed | missed | missed | **compile** |
+| 08 | reshape with pre-transpose sizes | [pymc#7178](https://github.com/pymc-devs/pymc/issues/7178) | missed | run-time⁸ | missed | **compile** |
+| 09 | single G-vector broadcast | [pyscf#2961](https://github.com/pyscf/pyscf/issues/2961) | missed | run-time | compile¹³ | **compile** |
+| 10 | model called without a batch axis | [lit-llama#166](https://github.com/Lightning-AI/lit-llama/pull/166) | missed | run-time | compile | **compile** |
+| 11 | NCHW frames into an NHWC pipeline | [vllm#51076](https://github.com/vllm-project/vllm/pull/51076) | missed | missed⁹ | compile¹⁴ | **compile** |
+| 12 | batched contraction over the wrong axis | [mlx#4125](https://github.com/ml-explore/mlx/pull/4125) | missed⁹ | missed⁹ | missed | **compile** |
+| 13 | `(w,h)` extents into an `(h,w)` API | [Gymnasium#1312](https://github.com/Farama-Foundation/Gymnasium/pull/1312) | missed | missed | missed | **compile** |
 
 | | compile | run-time | missed |
 |---|---|---|---|
 | Plain (NumPy/PyTorch) | 0 | 0 | **13** |
 | jaxtyping | 0 | 5 | 8 |
+| tensor_annotations | 5 | 0 | 8 |
 | **DimWit** | **12** | 0 | 1 |
 
 **Plain JAX has no column of its own.** It is still reconstructed in every case
@@ -98,9 +103,15 @@ A separate column would add no information.
 ⁷ at minimal scope: annotating softmax as `Float[Array, "n"] -> Float[Array, "n"]` removes the defect and rejects a tile at run time. At the upstream scope it is missed. The upgrade comes from the scope, not from jaxtyping — but only a type system can enforce a scope, which is why the plain column stays `missed` with the same vector function.
 ⁸ caught because pymc's chains and draws differed; it would be silent had the two coincided.
 ⁹ silent on the square data that shipped, and caught on a rectangular input — jaxtyping fires exactly when the two candidate axes have different lengths. Cases 01, 05, 11 and 12 are one phenomenon, not four. mlx#4125 itself raised a `ValueError` from an inconsistent size-1 batch broadcast; case 12 reconstructs the *underlying* hazard — axes identified by position, interchangeable at equal length — which is silent.
+¹⁰ [tensor_annotations](https://github.com/google-deepmind/tensor_annotations) 2.0.3 with its JAX stubs, checked by mypy *and* pyright (`tensor_annotations_case.py` asserts the exact diagnostics of both). `compile` here means rejected by the type checker. An operation the stubs leave untyped returns `Any` and counts as `missed` — indexing, `reshape`, `tensordot`, `einsum`, `cross`, `max`, `vmap` among them; no workaround around an `Any` is credited. Not part of `run_all.sh`: run `./scripts/check_tensor_annotations.sh`.
+¹¹ also with the signature as written upstream: `[Batch, Out] - [Batch]` aligns the trailing axes by name, and `Out` is not `Batch`. Contrast ³.
+¹² at the minimal interface, `cross` of two vectors on one axis as `Fixed.scala` defines it, where a `Spatial` × `Rgb` cross is rejected although every axis has length 3. Missed at the upstream scope, where `jnp.cross` takes an axis argument and is `Any`. The batching lift (`jax.vmap`) is `Any` too, so mapping over the wrong axis is accepted.
+¹³ for a caller whose argument is typed: the rank error sits in the interface (`Array2` vs `Array1`). Missed when the vector reaches the call as `Any`, e.g. from indexing or `jnp.array`.
+¹⁴ axes are compared by identity, not length, so this holds also for the square frames that shipped — where jaxtyping is silent (⁹).
 
 Where a verdict turned on a choice, the table reports the upstream data with the most
-favourable annotation, which credits jaxtyping in 02 and 06.
+favourable annotation, which credits jaxtyping in 02 and 06, and tensor_annotations in 03
+and 09.
 
 ## The DimWit miss is the point of the exercise
 

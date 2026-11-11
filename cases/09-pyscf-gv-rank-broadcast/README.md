@@ -43,4 +43,4 @@ and the regression test asserts `dat.shape == ref.shape` for `g` versus `g.resha
 | file | what it shows |
 |---|---|
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations); a typed vector (and `jnp.zeros((3,))`) is rejected statically at the `Array2` interface; a vector that is already `Any` (`GRID[1]`, `jnp.array`) passes mypy and pyright — the tests assert the exact errors plus a control of the inferred types |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |

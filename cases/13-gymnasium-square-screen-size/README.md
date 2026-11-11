@@ -102,4 +102,4 @@ resizing, cropping, padding and scaling do not. See `DIMWIT_SOLUTION.md`.
 | file | what it shows |
 |---|---|
 | `tensor_annotations_case.py` | *supplementary:* annotated with [tensor_annotations](https://github.com/google-deepmind/tensor_annotations), generic over the frame's own axes as DimWit's `innerResize` is; the extents are `tuple[int, int]`, so the unflipped pair passes mypy and pyright — the tests assert zero errors plus a control of the inferred types |
-| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh` or the results table) |
+| `TENSOR_ANNOTATIONS_SOLUTION.md` | *supplementary* verdict; run with `./scripts/check_tensor_annotations.sh -v` (not part of `run_all.sh`) |
