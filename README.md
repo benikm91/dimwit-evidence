@@ -47,7 +47,8 @@ which is not in the lock file. It was verified separately against torch 2.5.1 �
 | `tensor_annotations_case.py` | the same annotated with tensor_annotations, with tests that run mypy and pyright on the file and assert their exact diagnostics |
 | `Buggy.scala` | the DimWit transliteration of the mistake — normally rejected by the compiler |
 | `Fixed.scala` | the DimWit program that is correct, with a `@main` check that runs it |
-| `PLAIN_SOLUTION.md`, `PLAIN_JAX_SOLUTION.md`, `JAXTYPING_SOLUTION.md`, `TENSOR_ANNOTATIONS_SOLUTION.md`, `DIMWIT_SOLUTION.md` | one verdict each, with the reasoning and the honest limits |
+| `RankOnly.scala` | the defect in DimWit with positional axis labels (`A0`, `A1`, ...) instead of semantic names — the rank-only ablation |
+| `PLAIN_SOLUTION.md`, `PLAIN_JAX_SOLUTION.md`, `JAXTYPING_SOLUTION.md`, `TENSOR_ANNOTATIONS_SOLUTION.md`, `RANK_ONLY_SOLUTION.md`, `DIMWIT_SOLUTION.md` | one verdict each, with the reasoning and the honest limits |
 
 ## Categories
 
@@ -65,28 +66,31 @@ Verified by `run_all.sh`: **184 Python tests pass**, all 13 `Fixed.scala` compil
 `Buggy.scala` are rejected at compile time, and the 1 that is not is recorded as `missed`.
 The tensor_annotations column is verified separately by `./scripts/check_tensor_annotations.sh`
 (**55 tests pass**), which runs in a throwaway environment so the lock file is untouched.
+The rank-only column is not covered by either script: each `RankOnly.scala` was checked by
+hand with `scala-cli compile`.
 
-| # | case | source | Plain | jaxtyping | tensor_annotations¹⁰ | **DimWit** |
-|---|---|---|---|---|---|---|
-| 01 | attention mask on the query axis | [transformers#23974](https://github.com/huggingface/transformers/issues/23974) | missed | missed¹ | missed | **compile** |
-| 02 | MSE over `[n,1]` vs `[n]` | [pytorch#16045](https://github.com/pytorch/pytorch/issues/16045) | missed (warns)² | run-time³ | compile¹¹ | **compile** |
-| 03 | `cross` on the first length-3 axis | [keras#23219](https://github.com/keras-team/keras/pull/23219) | missed | missed | compile¹² | **compile** |
-| 04 | displacement normalised by the wrong side | [torchvision#9299](https://github.com/pytorch/vision/issues/9299) | missed | missed | missed | **missed**⁴ |
-| 05 | NCHW height/width swapped | [ultralytics#23126](https://github.com/ultralytics/ultralytics/issues/23126) | missed | missed⁵ | missed | **compile** |
-| 06 | softmax reduction dropped its axis | [triton#11406](https://github.com/triton-lang/triton/issues/11406) | missed⁶ | run-time⁷ | missed | **compile** |
-| 07 | stacked dim name collided | [arviz#1647](https://github.com/arviz-devs/arviz/pull/1647) | missed | missed | missed | **compile** |
-| 08 | reshape with pre-transpose sizes | [pymc#7178](https://github.com/pymc-devs/pymc/issues/7178) | missed | run-time⁸ | missed | **compile** |
-| 09 | single G-vector broadcast | [pyscf#2961](https://github.com/pyscf/pyscf/issues/2961) | missed | run-time | compile¹³ | **compile** |
-| 10 | model called without a batch axis | [lit-llama#166](https://github.com/Lightning-AI/lit-llama/pull/166) | missed | run-time | compile | **compile** |
-| 11 | NCHW frames into an NHWC pipeline | [vllm#51076](https://github.com/vllm-project/vllm/pull/51076) | missed | missed⁹ | compile¹⁴ | **compile** |
-| 12 | batched contraction over the wrong axis | [mlx#4125](https://github.com/ml-explore/mlx/pull/4125) | missed⁹ | missed⁹ | missed | **compile** |
-| 13 | `(w,h)` extents into an `(h,w)` API | [Gymnasium#1312](https://github.com/Farama-Foundation/Gymnasium/pull/1312) | missed | missed | missed | **compile** |
+| # | case | source | Plain | jaxtyping | tensor_annotations¹⁰ | DimWit rank-only¹⁵ | **DimWit** |
+|---|---|---|---|---|---|---|---|
+| 01 | attention mask on the query axis | [transformers#23974](https://github.com/huggingface/transformers/issues/23974) | missed | missed¹ | missed | missed | **compile** |
+| 02 | MSE over `[n,1]` vs `[n]` | [pytorch#16045](https://github.com/pytorch/pytorch/issues/16045) | missed (warns)² | run-time³ | compile¹¹ | compile | **compile** |
+| 03 | `cross` on the first length-3 axis | [keras#23219](https://github.com/keras-team/keras/pull/23219) | missed | missed | compile¹² | compile¹⁶ | **compile** |
+| 04 | displacement normalised by the wrong side | [torchvision#9299](https://github.com/pytorch/vision/issues/9299) | missed | missed | missed | missed | **missed**⁴ |
+| 05 | NCHW height/width swapped | [ultralytics#23126](https://github.com/ultralytics/ultralytics/issues/23126) | missed | missed⁵ | missed | missed | **compile** |
+| 06 | softmax reduction dropped its axis | [triton#11406](https://github.com/triton-lang/triton/issues/11406) | missed⁶ | run-time⁷ | missed | missed¹⁷ | **compile** |
+| 07 | stacked dim name collided | [arviz#1647](https://github.com/arviz-devs/arviz/pull/1647) | missed | missed | missed | missed | **compile** |
+| 08 | reshape with pre-transpose sizes | [pymc#7178](https://github.com/pymc-devs/pymc/issues/7178) | missed | run-time⁸ | missed | missed¹⁸ | **compile** |
+| 09 | single G-vector broadcast | [pyscf#2961](https://github.com/pyscf/pyscf/issues/2961) | missed | run-time | compile¹³ | compile | **compile** |
+| 10 | model called without a batch axis | [lit-llama#166](https://github.com/Lightning-AI/lit-llama/pull/166) | missed | run-time | compile | compile | **compile** |
+| 11 | NCHW frames into an NHWC pipeline | [vllm#51076](https://github.com/vllm-project/vllm/pull/51076) | missed | missed⁹ | compile¹⁴ | missed | **compile** |
+| 12 | batched contraction over the wrong axis | [mlx#4125](https://github.com/ml-explore/mlx/pull/4125) | missed⁹ | missed⁹ | missed | missed¹⁸ | **compile** |
+| 13 | `(w,h)` extents into an `(h,w)` API | [Gymnasium#1312](https://github.com/Farama-Foundation/Gymnasium/pull/1312) | missed | missed | missed | missed¹⁹ | **compile** |
 
 | | compile | run-time | missed |
 |---|---|---|---|
 | Plain (NumPy/PyTorch) | 0 | 0 | **13** |
 | jaxtyping | 0 | 5 | 8 |
 | tensor_annotations | 5 | 0 | 8 |
+| DimWit rank-only | 4 | 0 | 9 |
 | **DimWit** | **12** | 0 | 1 |
 
 **Plain JAX has no column of its own.** It is still reconstructed in every case
@@ -109,9 +113,38 @@ A separate column would add no information.
 ¹³ for a caller whose argument is typed: the rank error sits in the interface (`Array2` vs `Array1`). Missed when the vector reaches the call as `Any`, e.g. from indexing or `jnp.array`.
 ¹⁴ axes are compared by identity, not length, so this holds also for the square frames that shipped — where jaxtyping is silent (⁹).
 
+¹⁵ the DimWit program with the semantic names removed: same library, same compiler, but an axis is labelled by its position (`A0`, `A1`, ...) and the result of every operation is relabelled back to those positions, so a type states the rank of a tensor and nothing else. `RankOnly.scala` and `RANK_ONLY_SOLUTION.md` in each case folder. Not part of `run_all.sh`; each file is checked with `scala-cli compile`. See *The rank-only ablation* below.
+¹⁶ at the minimal scope of `cross`, rank 1 x rank 1 => rank 1, as for the DimWit column: the upstream call hands it two matrices, which is a rank error. `cross` is defined in the case, not in DimWit. The `Spatial` x `Rgb` mistake that `Buggy.scala` constructs compiles under positional labels.
+¹⁷ at the scope upstream used: `softmaxMatrix` of `Fixed.scala` without names is right over axis 1 and wrong over axis 0, because a reduced rank-1 result broadcasts onto axis 0 whichever axis it came from. The `keep_dims` flag itself is rejected under positional labels as well, and at the minimal scope (`softmaxVector` lifted over axis 0) the result is correct, so this cell is `compile` if scored like 03.
+¹⁸ with the same restricted API as the DimWit column, `flatten` in 08 and a contraction by one axis in 12. Without names the restriction rejects nothing: a position changes its meaning under a transpose (08), and every rank-2 tensor has an axis 0 (12).
+¹⁹ with the extents as plain `Int`s: without names an extent has no axis to be named after. Typed by position instead, `AxisExtent[A0]` and `AxisExtent[A1]`, the swap is rejected, but that keeps part of DimWit's naming machinery and is not rank-only.
+
 Where a verdict turned on a choice, the table reports the upstream data with the most
 favourable annotation, which credits jaxtyping in 02 and 06, and tensor_annotations in 03
 and 09.
+
+## The rank-only ablation
+
+The rank-only column answers one question: of the twelve defects DimWit rejects, how many
+does it reject because of the *names*, and how many would static rank typing with the same
+API reject as well? It keeps DimWit's library, compiler and API and removes only the names.
+
+* **Rejected without names: 4** (02, 03, 09, 10). 02, 09 and 10 are rank errors, which
+  jaxtyping and tensor_annotations catch too. 03 is a rank error at the minimal scope of
+  `cross`.
+* **Rejected only with names: 8** (01, 05, 06, 07, 08, 11, 12, 13). In each, the two things
+  that are confused have the same rank, so a rank-only type cannot tell them apart. 06 is
+  the least clear of them (¹⁷).
+* **04 is missed either way.**
+
+Rank-only DimWit catches the same four cases as tensor_annotations, which additionally
+catches 11 by axis identity, something positions cannot do. On these thirteen cases it is
+therefore below tensor_annotations, although it never loses the rank of a tensor, where
+tensor_annotations falls back to `Any` at every operation its stubs leave untyped.
+
+Cases 08 and 12 bear on whether the detections come from the names or from a more
+restrictive API. The API is the same in both columns there, `flatten` in place of `reshape`
+and a contraction that names its axis, and without names it rejects nothing (¹⁸).
 
 ## The DimWit miss is the point of the exercise
 
